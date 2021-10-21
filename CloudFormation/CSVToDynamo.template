@@ -143,38 +143,6 @@
                     "Variables" : {"bucket" : { "Ref" : "BucketName" }, "key" : { "Ref" : "FileName" },"table" : { "Ref" : "DynamoDBTableName" }}
                 }
             }
-        },
-
-        "S3Bucket": {
-            "DependsOn" : ["CsvToDDBLambdaFunction","BucketPermission"],
-            "Type": "AWS::S3::Bucket",
-            "Properties": {
-
-                "BucketName": {"Ref" : "BucketName"},
-                "AccessControl": "BucketOwnerFullControl",
-                "NotificationConfiguration":{
-                    "LambdaConfigurations":[
-                        {
-                            "Event":"s3:ObjectCreated:*",
-                            "Function":{
-                                "Fn::GetAtt": [
-                                    "CsvToDDBLambdaFunction",
-                                    "Arn"
-                                ]
-                            }
-                        }
-                    ]
-                }
-            }
-        },
-        "BucketPermission":{
-            "Type": "AWS::Lambda::Permission",
-            "Properties":{
-                "Action": "lambda:InvokeFunction",
-                "FunctionName":{"Ref" : "CsvToDDBLambdaFunction"},
-                "Principal": "s3.amazonaws.com",
-                "SourceAccount": {"Ref":"AWS::AccountId"}
-            }
         }
     },
     "Outputs" : {
